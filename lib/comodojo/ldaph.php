@@ -1,6 +1,6 @@
 <?php
 
-namespace ldaph;
+namespace comodojo;
 
 /**
  * ldaph: poor man's php ldap class
@@ -97,8 +97,8 @@ class ldaph {
 			throw new comodojoException("PHP ldap extension not available", 1407);
 		}
 
-		require_once("comodojo_debug.php");
-		require_once("comodojo_exceptions.php");
+		require_once("debug.php");
+		require_once("exceptions.php");
 
 		$this->server = $server;
 		$this->port = filter_var($port, FILTER_VALIDATE_INT);

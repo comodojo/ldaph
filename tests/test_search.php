@@ -1,6 +1,8 @@
 <?php
 
-require("../lib/ldaph.php");
+use comodojo;
+
+require("../lib/comodojo/ldaph.php");
 
 $ldap_server = "ldap.forumsys.com";
 $ldap_port 	= 389;
@@ -19,7 +21,7 @@ $auth_password = 'password';
 //ou=mathematicians,dc=example,dc=com
 
 try {
-	$ldap = new ldaph($ldap_server, $ldap_port);
+	$ldap = new comodojo\ldaph($ldap_server, $ldap_port);
 	$data = $ldap->base($base)
 		->searchbase($searchbase)
 		->dn($dn)

@@ -1,6 +1,7 @@
 <?php
 
-require("../lib/ldaph.php");
+use comodojo;
+require("../lib/comodojo/ldaph.php");
 
 $ldap_server = "ldap.forumsys.com";
 $ldap_port 	= 389;
@@ -15,7 +16,7 @@ $auth_login = 'einstein';
 $auth_password = 'password';
 
 try {
-	$ldap = new ldaph($ldap_server, $ldap_port);
+	$ldap = new comodojo\ldaph($ldap_server, $ldap_port);
 	$lauth = $ldap->dn($dn)
 		->version($ldap_verion)
 		->ssl($use_ssl)
