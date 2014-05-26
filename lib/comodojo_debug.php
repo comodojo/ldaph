@@ -1,8 +1,6 @@
 <?php
 
 /**
- * comodojo_debug.php
- * 
  * standard spare parts debug classes
  * 
  * @package 	Comodojo Spare Parts

@@ -1,8 +1,6 @@
 <?php
 
 /**
- * comodojo_exceptions.php
- * 
  * standard spare parts exception handler
  * 
  * @package 	Comodojo Spare Parts
@@ -24,6 +22,10 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Simply extend exception
  */
 class comodojoException extends Exception {}
 

@@ -1,9 +1,9 @@
 <?php
 
+namespace ldaph;
+
 /**
- * ldaph.php
- * 
- * poor man's php ldap class
+ * ldaph: poor man's php ldap class
  * 
  * @package 	Comodojo Spare Parts
  * @author		comodojo.org
@@ -28,17 +28,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Enable/disable debug globally
+ *
+ * @param bool
+ */
 define("COMODOJO_GLOBAL_DEBUG_ENABLED", true);
+
+/**
+ * Debug level (INFO, WARNING, ERROR)
+ *
+ * @param string
+ */
 define("COMODOJO_GLOBAL_DEBUG_LEVEL", "INFO");
+
+/**
+ * Specific debug file (if null, debug strings goes to error.log)
+ *
+ * @param string
+ */
 define("COMODOJO_GLOBAL_DEBUG_FILE", null);
 
-require_once("comodojo_debug.php");
-require_once("comodojo_exceptions.php");
-
+/**
+ * Comodojo ldaph main class
+ *
+ * @param string
+ */
 class ldaph {
 	
-/********************** PRIVATE VARS *********************/
-
 	private $ldaph = false;
 
 	private $version = 3;
@@ -61,13 +78,13 @@ class ldaph {
 
 	private $fields = Array();
 
-/********************** PRIVATE VARS *********************/
-
-/********************* PUBLIC METHODS ********************/
 	/**
 	 * Constructor class
 	 * 
-	 * Prepare environment for connection and bind
+	 * Prepare environment for connection (bind)
+	 *
+	 * @param	string	$server	ldap server (ip or FQDN)
+	 * @param	int		$port	port to connect to
 	 */
 	public function __construct($server, $port) {
 		
@@ -80,6 +97,9 @@ class ldaph {
 			throw new comodojoException("PHP ldap extension not available", 1407);
 		}
 
+		require_once("comodojo_debug.php");
+		require_once("comodojo_exceptions.php");
+
 		$this->server = $server;
 		$this->port = filter_var($port, FILTER_VALIDATE_INT);
 
@@ -87,6 +107,11 @@ class ldaph {
 		
 	}
 
+	/**
+	 * Set ldap base
+	 * 
+	 * @param	string	$dcs	ldap base, comma separated, not spaced
+	 */
 	public final function base($dcs) {
 
 		if ( empty($dcs) ) {
@@ -102,6 +127,13 @@ class ldaph {
 
 	}
 
+	/**
+	 * Set ldap distinguished name (used in ldap bind)
+	 * 
+	 * Before bind, special word USERNAME will be substituted by real username
+	 * 
+	 * @param	string	$dcs	ldap DN, comma separated, not spaced
+	 */
 	public final function dn($dn) {
 
 		if ( empty($dn) ) {
@@ -115,6 +147,11 @@ class ldaph {
 
 	}
 
+	/**
+	 * Set ldap version: 2 or 3 (default)
+	 * 
+	 * @param	int	$mode	ldap protocol version
+	 */
 	public final function version($mode=3) {
 
 		$mode = filter_var($mode, FILTER_VALIDATE_INT);
@@ -130,6 +167,11 @@ class ldaph {
 
 	}
 
+	/**
+	 * Enable/disable ssl for connection
+	 * 
+	 * @param	bool	$mode
+	 */
 	public final function ssl($mode=true) {
 
 		$mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
@@ -145,6 +187,11 @@ class ldaph {
 
 	}
 
+	/**
+	 * Enable/disable tls for connection
+	 * 
+	 * @param	bool	$mode
+	 */
 	public final function tls($mode=true) {
 
 		$mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
@@ -160,6 +207,11 @@ class ldaph {
 
 	}
 
+	/**
+	 * Enable/disable single sign on
+	 * 
+	 * @param	bool	$mode
+	 */
 	public final function sso($mode=true) {
 
 		$mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
@@ -179,6 +231,12 @@ class ldaph {
 
 	}
 
+	/**
+	 * Set user/pass for bind and search
+	 * 
+	 * @param	string	$user
+	 * @param	string	$pass
+	 */
 	public final function account($user, $pass) {
 		
 		if ( empty($user) OR empty($pass)) {
@@ -193,6 +251,13 @@ class ldaph {
 
 	}
 	
+	/**
+	 * Set ldap search base
+	 *
+	 * During search, special word PATTERN will be sbstituted by provided pattern
+	 * 
+	 * @param	string	$s
+	 */
 	public final function searchbase($s) {
 		
 		if ( empty($s) ) {
@@ -206,6 +271,11 @@ class ldaph {
 
 	}
 
+	/**
+	 * Set fields to query ldap for
+	 * 
+	 * @param	array|string	$f
+	 */
 	public final function fields($f) {
 
 		if ( empty($f) ) {
@@ -252,7 +322,10 @@ class ldaph {
 	}
 	
 	/**
-	 * List the directory
+	 * Search ldap directory for $what
+	 *
+	 * @param	string	$what	The pattern to search for (will replace the searcbase PATTERN special word)
+	 * @param	bool	$clean	If true, raw ldap_get_entries result will be normalized as plain array
 	 */
 	public function search($what="*", $clean=false) {
 			
@@ -273,11 +346,8 @@ class ldaph {
 
 	}
 
-/********************* PUBLIC METHODS ********************/
-
-/********************* PRIVATE METHODS *******************/	
 	/**
-	 * Setup an LDAP connection to server
+	 * Setup LDAP connection
 	 */
 	private function setupConnection($user=null, $pass=null) {
 
@@ -341,11 +411,9 @@ class ldaph {
 	}
 
 	/**
-	 * 
+	 * Helper for $this->search()
 	 */
 	private function search_helper($what, $clean) {
-
-		//$base = !$this->searchbase ? $this->dn : $this->searchbase;
 
 		$base = $this->dc;
 		$search = str_replace('PATTERN', $what, $this->searchbase);
@@ -378,6 +446,9 @@ class ldaph {
 		
 	}
 
+	/**
+	 * Normalize ldap search result into plain array
+	 */
 	private function search_cleaner($results) {
 
 		$entry = Array();
@@ -428,9 +499,6 @@ class ldaph {
 		return $entry;
 
 	}
-
-	
-/********************* PRIVATE METHODS *******************/
 	
 }
 
