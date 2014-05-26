@@ -28,14 +28,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-define("COMODOJO_GLOBAL_DEBUG_ENABLED", false);
+define("COMODOJO_GLOBAL_DEBUG_ENABLED", true);
 define("COMODOJO_GLOBAL_DEBUG_LEVEL", "INFO");
 define("COMODOJO_GLOBAL_DEBUG_FILE", null);
 
 require_once("comodojo_debug.php");
 require_once("comodojo_exceptions.php");
 
-class ldap {
+class ldaph {
 	
 /********************** PRIVATE VARS *********************/
 
