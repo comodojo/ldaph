@@ -1,7 +1,6 @@
 <?php
 
 use comodojo;
-
 require("../lib/comodojo/ldaph.php");
 
 $ldap_server = "ldap.forumsys.com";
