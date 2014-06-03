@@ -1,6 +1,4 @@
-<?php
-
-namespace comodojo;
+<?php namespace comodojo;
 
 /**
  * ldaph: poor man's php ldap class
@@ -10,7 +8,7 @@ namespace comodojo;
  * @copyright 	__COPYRIGHT__ comodojo.org (info@comodojo.org)
  * @version 	__CURRENT_VERSION__
  *
- * @tutorial please see README file
+ * @tutorial please see README.md file
  *
  * LICENSE:
  * 
@@ -27,6 +25,9 @@ namespace comodojo;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+require_once("debug.php");
+require_once("exceptions.php");
 
 /**
  * Enable/disable debug globally
@@ -89,16 +90,13 @@ class ldaph {
 	public function __construct($server, $port) {
 		
 		if ( empty($server) OR empty($port) ) {
-			comodojo_debug('Invalid LDAP parameters','ERROR','ldap');
-			throw new comodojoException("Invalid LDAP parameters", 1401);
+			debug('Invalid LDAP parameters','ERROR','ldap');
+			throw new Exception("Invalid LDAP parameters", 1401);
 		}
 		
 		if (!function_exists("ldap_connect")) {
-			throw new comodojoException("PHP ldap extension not available", 1407);
+			throw new Exception("PHP ldap extension not available", 1407);
 		}
-
-		require_once("debug.php");
-		require_once("exceptions.php");
 
 		$this->server = $server;
 		$this->port = filter_var($port, FILTER_VALIDATE_INT);
@@ -115,8 +113,8 @@ class ldaph {
 	public final function base($dcs) {
 
 		if ( empty($dcs) ) {
-			comodojo_debug('Invalid dc','ERROR','ldap');
-			throw new comodojoException($dcs, 1410);
+			debug('Invalid dc','ERROR','ldap');
+			throw new Exception($dcs, 1410);
 		}
 
 		$pDc = str_replace(' ', '', $dcs);
@@ -137,8 +135,8 @@ class ldaph {
 	public final function dn($dn) {
 
 		if ( empty($dn) ) {
-			comodojo_debug('Invalid dn','ERROR','ldap');
-			throw new comodojoException($dns, 1411);
+			debug('Invalid dn','ERROR','ldap');
+			throw new Exception($dns, 1411);
 		}
 
 		$this->dn = str_replace(' ', '', $dn);
@@ -218,8 +216,8 @@ class ldaph {
 
 		if ($mode === true) {
 			if ( !function_exists('ldap_sasl_bind') ) {
-				comodojo_debug('No LDAP SSO support','ERROR','ldap');
-				throw new comodojoException("No LDAP SSO support", 1408);
+				debug('No LDAP SSO support','ERROR','ldap');
+				throw new Exception("No LDAP SSO support", 1408);
 			}
 			$this->sso = true;
 		}
@@ -240,8 +238,8 @@ class ldaph {
 	public final function account($user, $pass) {
 		
 		if ( empty($user) OR empty($pass)) {
-			comodojo_debug('Invalid LDAP user/pass','ERROR','ldap');
-			throw new comodojoException("Invalid LDAP user/pass", 1402);
+			debug('Invalid LDAP user/pass','ERROR','ldap');
+			throw new Exception("Invalid LDAP user/pass", 1402);
 		}
 		
 		$this->user = $user;
@@ -302,11 +300,11 @@ class ldaph {
 	public function auth($userName, $userPass) {
 		
 		if( empty($userName) OR empty($userPass) ) { 
-			comodojo_debug('Invalid LDAP user/pass','ERROR','ldap');
-			throw new comodojoException("Invalid LDAP user/pass", 1402);
+			debug('Invalid LDAP user/pass','ERROR','ldap');
+			throw new Exception("Invalid LDAP user/pass", 1402);
 		}
 		
-		comodojo_debug('Starting LDAP auth','INFO','ldap');
+		debug('Starting LDAP auth','INFO','ldap');
 		
 		try {
 			$auth = $this->setupConnection($userName, $userPass);
@@ -329,7 +327,7 @@ class ldaph {
 	 */
 	public function search($what="*", $clean=false) {
 			
-		comodojo_debug('Starting LDAP directory search','INFO','ldap');
+		debug('Starting LDAP directory search','INFO','ldap');
 		
 		try {
 			$this->setupConnection($this->user, $this->pass);
@@ -359,11 +357,11 @@ class ldaph {
 		}
 		
 		if (!$this->ldaph) {
-			comodojo_debug('Unable to connect to ldap server: '.ldap_error($this->ldaph),'ERROR','ldap');
-			throw new comodojoException(ldap_error($this->ldaph), 1403);
+			debug('Unable to connect to ldap server: '.ldap_error($this->ldaph),'ERROR','ldap');
+			throw new Exception(ldap_error($this->ldaph), 1403);
 		}
 		
-		comodojo_debug('Connected to LDAP server '.$this->server.':'.$this->port.($this->ssl ? ' using SSL' : ''),'INFO','ldap');
+		debug('Connected to LDAP server '.$this->server.':'.$this->port.($this->ssl ? ' using SSL' : ''),'INFO','ldap');
 		
 		ldap_set_option($this->ldaph, LDAP_OPT_PROTOCOL_VERSION, $this->version);
 		ldap_set_option($this->ldaph, LDAP_OPT_REFERRALS, 0);
@@ -373,11 +371,11 @@ class ldaph {
 			$tls = @ldap_start_tls($this->ldaph);
 
 			if ($tls) {
-				comodojo_debug('Connection is using TLS','INFO','ldap');
+				debug('Connection is using TLS','INFO','ldap');
 			}
 			else {
-				comodojo_debug('Ldap error, TLS does not start correctly: '.ldap_error($this->ldaph),'ERROR','ldap');
-				throw new comodojoException(ldap_error($this->ldaph), 1403);
+				debug('Ldap error, TLS does not start correctly: '.ldap_error($this->ldaph),'ERROR','ldap');
+				throw new Exception(ldap_error($this->ldaph), 1403);
 			}
 
 		}
@@ -395,8 +393,8 @@ class ldaph {
 		}
 
 		if (!$bind) {
-			comodojo_debug('Ldap error, server refuse to bind: '.ldap_error($this->ldaph),'ERROR','ldap');
-			throw new comodojoException(ldap_error($this->ldaph), 1402);
+			debug('Ldap error, server refuse to bind: '.ldap_error($this->ldaph),'ERROR','ldap');
+			throw new Exception(ldap_error($this->ldaph), 1402);
 		}
 
 		return true;
@@ -426,15 +424,15 @@ class ldaph {
 		}
 
 		if (!$result) {
-			comodojo_debug('Unable to search through ldap directory','ERROR','ldap');
-			throw new comodojoException(ldap_error($this->ldaph), 1404);
+			debug('Unable to search through ldap directory','ERROR','ldap');
+			throw new Exception(ldap_error($this->ldaph), 1404);
 		}
 
 		$to_return = ldap_get_entries($this->ldaph, $result);
 
 		if (!$to_return) {
-			comodojo_debug('Unable to get ldap entries','ERROR','ldap');
-			throw new comodojoException(ldap_error($this->ldaph), 1412);
+			debug('Unable to get ldap entries','ERROR','ldap');
+			throw new Exception(ldap_error($this->ldaph), 1412);
 		}
 		
 		if ($clean) {

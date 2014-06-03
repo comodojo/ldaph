@@ -1,4 +1,4 @@
-<?php
+<?php namespace comodojo;
 
 /**
  * standard spare parts debug classes
@@ -25,27 +25,6 @@
  */
 
 /**
- * Transform stdObject into array 
- * 
- * @param	string/stdObject		$string			The string to decode
- * @return	array									The decoded array
- */
-function stdObj2array($stdObj) {
-	
-	if(is_object($stdObj) OR is_array($stdObj)) {
-		$array = array();
-		foreach($stdObj as $key=>$val){
-			$array[$key] = stdObj2array($val);
-		}
-		return $array;
-	}
-	else {
-		 return $stdObj;
-	}
-
-}
-
-/**
  * Write log to file or standard php error log
  * 
  * WARNING: using a custom error log file is actually highly inefficient,
@@ -53,7 +32,7 @@ function stdObj2array($stdObj) {
  *
  * This behaviour will be changed in future releases.
  */
-function comodojo_debug_line($log) {
+function debug_line($log) {
 
 	if (is_null(COMODOJO_GLOBAL_DEBUG_FILE)){
 		error_log($log);
@@ -74,27 +53,22 @@ function comodojo_debug_line($log) {
  * @param	string						$type		The message type (INFO|WARNING|ERROR)
  * @param	string						$reference	The message reference (i.e. DATABASE, SSH, ...)
  */
-function comodojo_debug($message,$type='ERROR',$reference="UNKNOWN") {
+function debug($message,$type='ERROR',$reference="UNKNOWN") {
 
 	if (COMODOJO_GLOBAL_DEBUG_ENABLED) {
 
 		if ( strtoupper(COMODOJO_GLOBAL_DEBUG_LEVEL) == 'ERROR' AND strtoupper($type) != 'ERROR') return;
 		elseif ( strtoupper(COMODOJO_GLOBAL_DEBUG_LEVEL) == 'WARNING' AND (strtoupper($type) != 'ERROR' OR strtoupper($type) != 'WARNING')) return;
-		elseif (is_array($message)) {
-			comodojo_debug_line("(".$type.") ".$reference." ------ Start of debug dump ------");
-			comodojo_debug_line(var_export($message, true));
-			comodojo_debug_line("(".$type.") ".$reference." ------ End of debug dump ------");
-		}
-		elseif (is_object($message)) {
-			comodojo_debug_line("(".$type.") ".$reference." ------ Start of debug dump ------");
-			comodojo_debug_line(var_export(stdObj2array($message), true));
-			comodojo_debug_line("(".$type.") ".$reference." ------ End of debug dump ------");
+		elseif ( is_array($message) OR is_object($message) ) {
+			debug_line("(".$type.") ".$reference." ------ Start of debug dump ------");
+			debug_line(var_export($message, true));
+			debug_line("(".$type.") ".$reference." ------ End of debug dump ------");
 		}
 		elseif(is_scalar($message)) {
-			comodojo_debug_line("(".$type.") ".$reference." | ".$message);
+			debug_line("(".$type.") ".$reference." | ".$message);
 		}
 		else {
-			comodojo_debug_line("(DEBUG-ERROR): invalid value type for debug.");
+			debug_line("(DEBUG-ERROR): invalid value type for debug.");
 		}
 
 	}

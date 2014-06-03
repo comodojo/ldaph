@@ -1,6 +1,5 @@
 <?php
 
-use comodojo;
 require("../lib/comodojo/ldaph.php");
 
 $ldap_server = "ldap.forumsys.com";
@@ -23,8 +22,8 @@ try {
 		->tls($use_tls)
 		->auth($auth_login, $auth_password);
 }
-catch (comodojoException $ce) {
-	die($ce->getMessage());
+catch (comodojo\Exception $ce) {
+	die("comodojo exception: ".$ce->getMessage());
 }
 catch (Exception $e){
 	die($e->getMessage());

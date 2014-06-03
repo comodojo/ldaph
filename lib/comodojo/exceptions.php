@@ -1,4 +1,4 @@
-<?php
+<?php namespace comodojo;
 
 /**
  * standard spare parts exception handler
@@ -27,6 +27,6 @@
 /**
  * Simply extend exception
  */
-class comodojoException extends Exception {}
+class Exception extends \Exception {}
 
 ?>
