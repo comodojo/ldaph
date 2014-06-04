@@ -1,0 +1,28 @@
+{
+    "name": "comodojo/ldaph",
+    "description": "poor man's php ldap class",
+    "license": "GPL-3.0+",
+    "keywords": [
+        "ldap",
+        "php",
+        "active directory",
+        "ldaps",
+        "sso",
+        "directory search",
+        "authentication"
+    ],
+    "homepage": "http://ldaph.comodojo.com",
+    "authors": [
+        {
+            "name": "comodojo",
+            "email": "info@comodojo.org"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/comodojo/ldaph/issues"
+    },
+    "minimum-stability": "stable",
+    "require": {
+
+    }
+}
