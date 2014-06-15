@@ -21,6 +21,9 @@
     "support": {
         "issues": "https://github.com/comodojo/ldaph/issues"
     },
+    "autoload": {
+        "psr-4": {"comodojo\\": "lib/comodojo"}
+    },
     "minimum-stability": "stable",
     "require": {
 
