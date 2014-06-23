@@ -26,15 +26,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once("debug.php");
-require_once("exceptions.php");
+define("LDAPH_REAL_PATH",realpath(dirname(__FILE__)));
+
+require_once(LDAPH_REAL_PATH."/debug.php");
+require_once(LDAPH_REAL_PATH."/Exception/LdaphException.php");
+
+use \comodojo\Exception\LdaphException;
 
 /**
  * Enable/disable debug globally
  *
  * @param bool
  */
-define("COMODOJO_GLOBAL_DEBUG_ENABLED", true);
+define("COMODOJO_GLOBAL_DEBUG_ENABLED", false);
 
 /**
  * Debug level (INFO, WARNING, ERROR)
@@ -91,11 +95,11 @@ class ldaph {
 		
 		if ( empty($server) OR empty($port) ) {
 			debug('Invalid LDAP parameters','ERROR','ldap');
-			throw new Exception("Invalid LDAP parameters", 1401);
+			throw new LdaphException("Invalid LDAP parameters", 1401);
 		}
 		
 		if (!function_exists("ldap_connect")) {
-			throw new Exception("PHP ldap extension not available", 1407);
+			throw new LdaphException("PHP ldap extension not available", 1407);
 		}
 
 		$this->server = $server;
@@ -114,7 +118,7 @@ class ldaph {
 
 		if ( empty($dcs) ) {
 			debug('Invalid dc','ERROR','ldap');
-			throw new Exception($dcs, 1410);
+			throw new LdaphException($dcs, 1410);
 		}
 
 		$pDc = str_replace(' ', '', $dcs);
@@ -136,7 +140,7 @@ class ldaph {
 
 		if ( empty($dn) ) {
 			debug('Invalid dn','ERROR','ldap');
-			throw new Exception($dns, 1411);
+			throw new LdaphException($dns, 1411);
 		}
 
 		$this->dn = str_replace(' ', '', $dn);
@@ -217,7 +221,7 @@ class ldaph {
 		if ($mode === true) {
 			if ( !function_exists('ldap_sasl_bind') ) {
 				debug('No LDAP SSO support','ERROR','ldap');
-				throw new Exception("No LDAP SSO support", 1408);
+				throw new LdaphException("No LDAP SSO support", 1408);
 			}
 			$this->sso = true;
 		}
@@ -239,7 +243,7 @@ class ldaph {
 		
 		if ( empty($user) OR empty($pass)) {
 			debug('Invalid LDAP user/pass','ERROR','ldap');
-			throw new Exception("Invalid LDAP user/pass", 1402);
+			throw new LdaphException("Invalid LDAP user/pass", 1402);
 		}
 		
 		$this->user = $user;
@@ -301,16 +305,26 @@ class ldaph {
 		
 		if( empty($userName) OR empty($userPass) ) { 
 			debug('Invalid LDAP user/pass','ERROR','ldap');
-			throw new Exception("Invalid LDAP user/pass", 1402);
+			throw new LdaphException("Invalid LDAP user/pass", 1402);
 		}
 		
 		debug('Starting LDAP auth','INFO','ldap');
 		
 		try {
+
 			$auth = $this->setupConnection($userName, $userPass);
+
+		} catch (LdaphException $le) {
+
+			$this->unsetConnection();
+			throw $le;
+
 		} catch (Exception $e) {
+
+			debug('Error ('.$e->getCode()."): ".$e->getMessage(),'INFO','ldap');
 			$this->unsetConnection();
 			throw $e;
+
 		}
 
 		$this->unsetConnection();
@@ -330,12 +344,23 @@ class ldaph {
 		debug('Starting LDAP directory search','INFO','ldap');
 		
 		try {
+
 			$this->setupConnection($this->user, $this->pass);
 			ldap_set_option($this->ldaph, LDAP_OPT_SIZELIMIT, 0);
 			$result = $this->search_helper($what, filter_var($clean, FILTER_VALIDATE_BOOLEAN));
+
+		}
+		catch (LdaphException $le) {
+
+			$this->unsetConnection();
+			throw $le;
+
 		} catch (Exception $e) {
+
+			debug('Error ('.$e->getCode()."): ".$e->getMessage(),'INFO','ldap');
 			$this->unsetConnection();
 			throw $e;
+
 		}
 
 		$this->unsetConnection();
@@ -358,7 +383,7 @@ class ldaph {
 		
 		if (!$this->ldaph) {
 			debug('Unable to connect to ldap server: '.ldap_error($this->ldaph),'ERROR','ldap');
-			throw new Exception(ldap_error($this->ldaph), 1403);
+			throw new LdaphException(ldap_error($this->ldaph), 1403);
 		}
 		
 		debug('Connected to LDAP server '.$this->server.':'.$this->port.($this->ssl ? ' using SSL' : ''),'INFO','ldap');
@@ -375,7 +400,7 @@ class ldaph {
 			}
 			else {
 				debug('Ldap error, TLS does not start correctly: '.ldap_error($this->ldaph),'ERROR','ldap');
-				throw new Exception(ldap_error($this->ldaph), 1403);
+				throw new LdaphException(ldap_error($this->ldaph), 1403);
 			}
 
 		}
@@ -394,7 +419,7 @@ class ldaph {
 
 		if (!$bind) {
 			debug('Ldap error, server refuse to bind: '.ldap_error($this->ldaph),'ERROR','ldap');
-			throw new Exception(ldap_error($this->ldaph), 1402);
+			throw new LdaphException(ldap_error($this->ldaph), 1402);
 		}
 
 		return true;
@@ -425,14 +450,14 @@ class ldaph {
 
 		if (!$result) {
 			debug('Unable to search through ldap directory','ERROR','ldap');
-			throw new Exception(ldap_error($this->ldaph), 1404);
+			throw new LdaphException(ldap_error($this->ldaph), 1404);
 		}
 
 		$to_return = ldap_get_entries($this->ldaph, $result);
 
 		if (!$to_return) {
 			debug('Unable to get ldap entries','ERROR','ldap');
-			throw new Exception(ldap_error($this->ldaph), 1412);
+			throw new LdaphException(ldap_error($this->ldaph), 1412);
 		}
 		
 		if ($clean) {

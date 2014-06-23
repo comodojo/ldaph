@@ -1,7 +1,7 @@
-<?php namespace comodojo;
+<?php namespace comodojo\Exception;
 
 /**
- * standard spare parts exception handler
+ * ldaph exception handler
  * 
  * @package 	Comodojo Spare Parts
  * @author		comodojo.org
@@ -27,6 +27,6 @@
 /**
  * Simply extend exception
  */
-class Exception extends \Exception {}
+class LdaphException extends \Exception {}
 
 ?>

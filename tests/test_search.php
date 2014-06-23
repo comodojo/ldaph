@@ -2,6 +2,9 @@
 
 require("../lib/comodojo/ldaph.php");
 
+use comodojo\ldaph;
+use comodojo\Exception\LdaphException;
+
 $ldap_server = "ldap.forumsys.com";
 $ldap_port 	= 389;
 $ldap_verion = 3;
@@ -17,7 +20,7 @@ $auth_login = 'euclid';
 $auth_password = 'password';
 
 try {
-	$ldap = new comodojo\ldaph($ldap_server, $ldap_port);
+	$ldap = new ldaph($ldap_server, $ldap_port);
 	$data = $ldap->base($base)
 		->searchbase($searchbase)
 		->dn($dn)
@@ -27,7 +30,7 @@ try {
 		->account($auth_login, $auth_password)
 		->search("*",true);
 }
-catch (comodojo\Exception $ce) {
+catch (LdapException $ce) {
 	die("comodojo exception: ".$ce->getMessage());
 }
 catch (Exception $e){
