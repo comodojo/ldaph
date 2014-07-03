@@ -3,12 +3,9 @@
 /**
  * ldaph: poor man's php ldap class
  * 
- * @package 	Comodojo Spare Parts
- * @author		comodojo.org
- * @copyright 	__COPYRIGHT__ comodojo.org (info@comodojo.org)
- * @version 	__CURRENT_VERSION__
- *
- * @tutorial please see README.md file
+ * @package 	Comodojo ldaph (Spare Parts)
+ * @author		comodojo <info@comodojo.org>
+ * @license 	GPL-3.0+
  *
  * LICENSE:
  * 
@@ -25,11 +22,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-define("LDAPH_REAL_PATH",realpath(dirname(__FILE__)));
-
-require_once(LDAPH_REAL_PATH."/debug.php");
-require_once(LDAPH_REAL_PATH."/Exception/LdaphException.php");
 
 use \comodojo\Exception\LdaphException;
 

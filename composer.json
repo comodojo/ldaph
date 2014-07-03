@@ -22,10 +22,10 @@
         "issues": "https://github.com/comodojo/ldaph/issues"
     },
     "autoload": {
+        "files": [
+            "lib/comodojo/debug.php"
+        ],
         "psr-4": {"comodojo\\": "lib/comodojo"}
     },
-    "minimum-stability": "stable",
-    "require": {
-
-    }
+    "minimum-stability": "stable"
 }

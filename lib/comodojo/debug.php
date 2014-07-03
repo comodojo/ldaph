@@ -3,10 +3,9 @@
 /**
  * standard spare parts debug classes
  * 
- * @package 	Comodojo Spare Parts
- * @author		comodojo.org
- * @copyright 	__COPYRIGHT__ comodojo.org (info@comodojo.org)
- * @version 	__CURRENT_VERSION__
+ * @package 	Comodojo ldaph (Spare Parts)
+ * @author		comodojo <info@comodojo.org>
+ * @license 	GPL-3.0+
  *
  * LICENSE:
  * 
@@ -50,8 +49,8 @@ function debug_line($log) {
  * Debug something to error_log
  * 
  * @param	string|object|array|integer	$message	Debug message
- * @param	string						$type		The message type (INFO|WARNING|ERROR)
- * @param	string						$reference	The message reference (i.e. DATABASE, SSH, ...)
+ * @param	string						$type		The message type (DEBUG|INFO|WARNING|ERROR)
+ * @param	string						$reference	The message reference
  */
 function debug($message,$type='ERROR',$reference="UNKNOWN") {
 
@@ -59,6 +58,7 @@ function debug($message,$type='ERROR',$reference="UNKNOWN") {
 
 		if ( strtoupper(COMODOJO_GLOBAL_DEBUG_LEVEL) == 'ERROR' AND strtoupper($type) != 'ERROR') return;
 		elseif ( strtoupper(COMODOJO_GLOBAL_DEBUG_LEVEL) == 'WARNING' AND (strtoupper($type) != 'ERROR' OR strtoupper($type) != 'WARNING')) return;
+		elseif ( strtoupper(COMODOJO_GLOBAL_DEBUG_LEVEL) == 'INFO' AND (strtoupper($type) != 'ERROR' OR strtoupper($type) != 'WARNING' OR strtoupper($type) != 'INFO') ) return;
 		elseif ( is_array($message) OR is_object($message) ) {
 			debug_line("(".$type.") ".$reference." ------ Start of debug dump ------");
 			debug_line(var_export($message, true));
