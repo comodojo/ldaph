@@ -23,7 +23,7 @@
     },
     "autoload": {
         "files": [
-            "lib/comodojo/debug.php"
+            "src/debug.php"
         ],
         "psr-4": {"comodojo\\Ldaph\\": "src"}
     },
