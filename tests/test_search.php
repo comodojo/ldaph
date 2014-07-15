@@ -1,8 +1,9 @@
 <?php
 
-require("../lib/comodojo/ldaph.php");
+require("../src/debug.php");
+require("../src/ldaph.php");
 
-use comodojo\ldaph;
+use comodojo\Ldaph\ldaph;
 use comodojo\Exception\LdaphException;
 
 $ldap_server = "ldap.forumsys.com";

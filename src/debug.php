@@ -1,4 +1,4 @@
-<?php namespace comodojo;
+<?php namespace comodojo\Ldaph;
 
 /**
  * standard spare parts debug classes

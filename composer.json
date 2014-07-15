@@ -14,7 +14,7 @@
     "homepage": "http://ldaph.comodojo.org",
     "authors": [
         {
-            "name": "comodojo",
+            "name": "Marco Giovinazzi",
             "email": "info@comodojo.org"
         }
     ],
@@ -25,7 +25,7 @@
         "files": [
             "lib/comodojo/debug.php"
         ],
-        "psr-4": {"comodojo\\": "lib/comodojo"}
+        "psr-4": {"comodojo\\Ldaph\\": "src"}
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }

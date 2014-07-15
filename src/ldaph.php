@@ -1,4 +1,4 @@
-<?php namespace comodojo;
+<?php namespace comodojo\Ldaph;
 
 /**
  * ldaph: poor man's php ldap class
@@ -30,21 +30,21 @@ use \comodojo\Exception\LdaphException;
  *
  * @param bool
  */
-define("COMODOJO_GLOBAL_DEBUG_ENABLED", false);
+if ( !defined("COMODOJO_GLOBAL_DEBUG_ENABLED") ) define("COMODOJO_GLOBAL_DEBUG_ENABLED", false);
 
 /**
  * Debug level (INFO, WARNING, ERROR)
  *
  * @param string
  */
-define("COMODOJO_GLOBAL_DEBUG_LEVEL", "INFO");
+if ( !defined("COMODOJO_GLOBAL_DEBUG_LEVEL") ) define("COMODOJO_GLOBAL_DEBUG_LEVEL", "INFO");
 
 /**
  * Specific debug file (if null, debug strings goes to error.log)
  *
  * @param string
  */
-define("COMODOJO_GLOBAL_DEBUG_FILE", null);
+if ( !defined("COMODOJO_GLOBAL_DEBUG_FILE") ) define("COMODOJO_GLOBAL_DEBUG_FILE", null);
 
 /**
  * Comodojo ldaph main class
