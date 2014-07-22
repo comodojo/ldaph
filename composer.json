@@ -11,7 +11,7 @@
         "directory search",
         "authentication"
     ],
-    "homepage": "http://ldaph.comodojo.org",
+    "homepage": "http://www.comodojo.org",
     "authors": [
         {
             "name": "Marco Giovinazzi",
@@ -22,10 +22,10 @@
         "issues": "https://github.com/comodojo/ldaph/issues"
     },
     "autoload": {
-        "files": [
-            "src/debug.php"
-        ],
-        "psr-4": {"comodojo\\Ldaph\\": "src"}
+        "psr-4": {
+             "Comodojo\\Exception\\": "src/Exception",
+             "Comodojo\\Ldaph\\": "src"
+         }
     },
     "minimum-stability": "dev"
 }

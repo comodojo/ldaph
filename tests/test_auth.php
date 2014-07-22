@@ -1,13 +1,13 @@
 <?php
 
-require("../src/debug.php");
-require("../src/ldaph.php");
+require("../src/Exception/LdaphException.php");
+require("../src/Ldaph.php");
 
-use comodojo\Ldaph\ldaph;
-use comodojo\Exception\LdaphException;
+use Comodojo\Ldaph\Ldaph;
+use Comodojo\Exception\LdaphException;
 
 $ldap_server = "ldap.forumsys.com";
-$ldap_port 	= 389;
+$ldap_port  = 389;
 $ldap_verion = 3;
 
 $dn = "uid=USERNAME,dc=example,dc=com";
@@ -19,25 +19,23 @@ $auth_login = 'einstein';
 $auth_password = 'password';
 
 try {
-	$ldap = new ldaph($ldap_server, $ldap_port);
-	$lauth = $ldap->dn($dn)
-		->version($ldap_verion)
-		->ssl($use_ssl)
-		->tls($use_tls)
-		->auth($auth_login, $auth_password);
+    $ldap = new Ldaph($ldap_server, $ldap_port);
+    $lauth = $ldap->dn($dn)
+        ->version($ldap_verion)
+        ->ssl($use_ssl)
+        ->tls($use_tls)
+        ->auth($auth_login, $auth_password);
 }
 catch (LdaphException $ce) {
-	die("comodojo exception: ".$ce->getMessage());
+    die("comodojo exception: ".$ce->getMessage());
 }
 catch (Exception $e){
-	die($e->getMessage());
+    die($e->getMessage());
 }
 
 if ($lauth) {
-	echo 'User '.$auth_login.' authenticated via ldap';
+    echo 'User '.$auth_login.' authenticated via ldap';
 }
 else {
-	echo 'User '.$auth_login.' unknown or wrong password';
+    echo 'User '.$auth_login.' unknown or wrong password';
 }
-
-?>
