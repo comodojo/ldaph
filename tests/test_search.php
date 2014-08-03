@@ -1,7 +1,7 @@
 <?php
 
-require("../src/Exception/LdaphException.php");
-require("../src/Ldaph.php");
+require '../src/Exception/LdaphException.php';
+require '../src/Ldaph.php';
 
 use Comodojo\Ldaph\Ldaph;
 use Comodojo\Exception\LdaphException;
@@ -30,11 +30,9 @@ try {
         ->tls($use_tls)
         ->account($auth_login, $auth_password)
         ->search("*",true);
-}
-catch (LdapException $ce) {
+} catch (LdapException $ce) {
     die("comodojo exception: ".$ce->getMessage());
-}
-catch (Exception $e){
+} catch (Exception $e) {
     die($e->getMessage());
 }
 
