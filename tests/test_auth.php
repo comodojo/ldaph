@@ -1,7 +1,7 @@
 <?php
 
-require("../src/Exception/LdaphException.php");
-require("../src/Ldaph.php");
+require '../src/Exception/LdaphException.php';
+require '../src/Ldaph.php';
 
 use Comodojo\Ldaph\Ldaph;
 use Comodojo\Exception\LdaphException;
@@ -25,17 +25,14 @@ try {
         ->ssl($use_ssl)
         ->tls($use_tls)
         ->auth($auth_login, $auth_password);
-}
-catch (LdaphException $ce) {
+} catch (LdaphException $ce) {
     die("comodojo exception: ".$ce->getMessage());
-}
-catch (Exception $e){
+} catch (Exception $e) {
     die($e->getMessage());
 }
 
 if ($lauth) {
     echo 'User '.$auth_login.' authenticated via ldap';
-}
-else {
+} else {
     echo 'User '.$auth_login.' unknown or wrong password';
 }
