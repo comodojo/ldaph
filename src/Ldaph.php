@@ -1,5 +1,7 @@
 <?php namespace Comodojo\Ldaph;
 
+use \Comodojo\Exception\LdaphException;
+
 /**
  * ldaph: poor man's php ldap class
  * 
@@ -23,13 +25,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use \Comodojo\Exception\LdaphException;
-
-/**
- * Comodojo ldaph main class
- *
- * @param string
- */
 class Ldaph {
     
     private $ldaph = false;
@@ -55,42 +50,44 @@ class Ldaph {
     private $fields = Array();
 
     /**
-     * Constructor class
+     * Constructor method
      * 
      * Prepare environment for connection (bind)
      *
      * @param   string  $server ldap server (ip or FQDN)
      * @param   int     $port   port to connect to
+     *
+     * @return  Object  $this
      */
     public function __construct($server, $port) {
         
-        if ( empty($server) OR empty($port) ) {
-            // debug('Invalid LDAP parameters','ERROR','ldap');
-            throw new LdaphException("Invalid LDAP parameters", 1401);
-        }
+        if ( empty($server) OR empty($port) ) throw new LdaphException("Invalid LDAP parameters", 1401);
         
-        if (!function_exists("ldap_connect")) {
-            throw new LdaphException("PHP ldap extension not available", 1407);
-        }
+        if (!function_exists("ldap_connect")) throw new LdaphException("PHP ldap extension not available", 1407);
 
         $this->server = $server;
-        $this->port = filter_var($port, FILTER_VALIDATE_INT);
 
-        return $this;
-        
+        $this->port = filter_var($port, FILTER_VALIDATE_INT, array(
+            "options" => array(
+                "min_range" => 1,
+                "max_range" => 65535,
+                "default" => 389
+                )
+            )
+        );
+
     }
 
     /**
      * Set ldap base
      * 
      * @param   string  $dcs    ldap base, comma separated, not spaced
+     *
+     * @return  Object  $this
      */
     public final function base($dcs) {
 
-        if ( empty($dcs) ) {
-            // debug('Invalid dc','ERROR','ldap');
-            throw new LdaphException($dcs, 1410);
-        }
+        if ( empty($dcs) ) throw new LdaphException($dcs, 1410);
 
         $pDc = str_replace(' ', '', $dcs);
 
@@ -106,13 +103,12 @@ class Ldaph {
      * Before bind, special word USERNAME will be substituted by real username
      * 
      * @param   string  $dcs    ldap DN, comma separated, not spaced
+     *
+     * @return  Object  $this
      */
     public final function dn($dn) {
 
-        if ( empty($dn) ) {
-            // debug('Invalid dn','ERROR','ldap');
-            throw new LdaphException($dns, 1411);
-        }
+        if ( empty($dn) )  throw new LdaphException($dns, 1411);
 
         $this->dn = str_replace(' ', '', $dn);
 
@@ -124,6 +120,8 @@ class Ldaph {
      * Set ldap version: 2 or 3 (default)
      * 
      * @param   int $mode   ldap protocol version
+     *
+     * @return  Object  $this
      */
     public final function version($mode=3) {
 
@@ -144,6 +142,8 @@ class Ldaph {
      * Enable/disable ssl for connection
      * 
      * @param   bool    $mode
+     *
+     * @return  Object  $this
      */
     public final function ssl($mode=true) {
 
@@ -164,6 +164,8 @@ class Ldaph {
      * Enable/disable tls for connection
      * 
      * @param   bool    $mode
+     *
+     * @return  Object  $this
      */
     public final function tls($mode=true) {
 
@@ -184,20 +186,23 @@ class Ldaph {
      * Enable/disable single sign on
      * 
      * @param   bool    $mode
+     *
+     * @return  Object  $this
      */
     public final function sso($mode=true) {
 
         $mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
 
         if ($mode === true) {
-            if ( !function_exists('ldap_sasl_bind') ) {
-                // debug('No LDAP SSO support','ERROR','ldap');
-                throw new LdaphException("No LDAP SSO support", 1408);
-            }
+
+            if ( !function_exists('ldap_sasl_bind') ) throw new LdaphException("No LDAP SSO support", 1408);
+
             $this->sso = true;
-        }
-        else {
+
+        } else {
+          
             $this->sso = false;
+
         }
 
         return $this;
@@ -209,13 +214,12 @@ class Ldaph {
      * 
      * @param   string  $user
      * @param   string  $pass
+     *
+     * @return  Object  $this
      */
     public final function account($user, $pass) {
         
-        if ( empty($user) OR empty($pass)) {
-            // debug('Invalid LDAP user/pass','ERROR','ldap');
-            throw new LdaphException("Invalid LDAP user/pass", 1402);
-        }
+        if ( empty($user) OR empty($pass)) throw new LdaphException("Invalid LDAP user/pass", 1402);
         
         $this->user = $user;
         $this->pass = $pass;
@@ -230,6 +234,8 @@ class Ldaph {
      * During search, special word PATTERN will be sbstituted by provided pattern
      * 
      * @param   string  $s
+     *
+     * @return  Object  $this
      */
     public final function searchbase($s) {
         
@@ -247,21 +253,20 @@ class Ldaph {
     /**
      * Set fields to query ldap for
      * 
-     * @param   array|string    $f
+     * @param   mixed    $f
+     *
+     * @return  Object  $this
      */
     public final function fields($f) {
 
-        if ( empty($f) ) {
-            $this->fields = null;
-        }
-        elseif ( is_array($f) ) {
-            $this->fields = $f;
-        }
-        else {
-            $this->fields = Array($f);
-        }
+        if ( empty($f) ) $this->fields = null;
+        
+        elseif ( is_array($f) ) $this->fields = $f;
 
-        return $this; 
+        else $this->fields = array($f);
+
+        return $this;
+
     }
 
     /**
@@ -274,12 +279,7 @@ class Ldaph {
      */
     public function auth($userName, $userPass) {
         
-        if( empty($userName) OR empty($userPass) ) { 
-            // debug('Invalid LDAP user/pass','ERROR','ldap');
-            throw new LdaphException("Invalid LDAP user/pass", 1402);
-        }
-        
-        // debug('Starting LDAP auth','INFO','ldap');
+        if( empty($userName) OR empty($userPass) ) throw new LdaphException("Invalid LDAP user/pass", 1402);
         
         try {
 
@@ -288,12 +288,13 @@ class Ldaph {
         } catch (LdaphException $le) {
 
             $this->unsetConnection();
+
             throw $le;
 
         } catch (Exception $e) {
 
-            // debug('Error ('.$e->getCode()."): ".$e->getMessage(),'INFO','ldap');
             $this->unsetConnection();
+
             throw $e;
 
         }
@@ -309,27 +310,30 @@ class Ldaph {
      *
      * @param   string  $what   The pattern to search for (will replace the searcbase PATTERN special word)
      * @param   bool    $clean  If true, raw ldap_get_entries result will be normalized as plain array
+     *
+     * @return  array
      */
     public function search($what="*", $clean=false) {
             
-        // debug('Starting LDAP directory search','INFO','ldap');
-        
         try {
 
             $this->setupConnection($this->user, $this->pass);
+
             ldap_set_option($this->ldaph, LDAP_OPT_SIZELIMIT, 0);
+            
             $result = $this->searchHelper($what, filter_var($clean, FILTER_VALIDATE_BOOLEAN));
 
         }
         catch (LdaphException $le) {
 
             $this->unsetConnection();
+
             throw $le;
 
         } catch (Exception $e) {
 
-            // debug('Error ('.$e->getCode()."): ".$e->getMessage(),'INFO','ldap');
             $this->unsetConnection();
+
             throw $e;
 
         }
@@ -345,19 +349,9 @@ class Ldaph {
      */
     private function setupConnection($user=null, $pass=null) {
 
-        if ($this->ssl) {
-            $this->ldaph = ldap_connect("ldaps://".$this->server, $this->port);
-        }
-        else {
-            $this->ldaph = ldap_connect($this->server, $this->port);
-        }
-        
-        if (!$this->ldaph) {
-            // debug('Unable to connect to ldap server: '.ldap_error($this->ldaph),'ERROR','ldap');
-            throw new LdaphException(ldap_error($this->ldaph), 1403);
-        }
-        
-        // debug('Connected to LDAP server '.$this->server.':'.$this->port.($this->ssl ? ' using SSL' : ''),'INFO','ldap');
+        $this->ldaph = $this->ssl ? ldap_connect("ldaps://".$this->server, $this->port) : ldap_connect($this->server, $this->port);
+
+        if (!$this->ldaph) throw new LdaphException(ldap_error($this->ldaph), 1403);
         
         ldap_set_option($this->ldaph, LDAP_OPT_PROTOCOL_VERSION, $this->version);
         ldap_set_option($this->ldaph, LDAP_OPT_REFERRALS, 0);
@@ -366,32 +360,28 @@ class Ldaph {
 
             $tls = @ldap_start_tls($this->ldaph);
 
-            if ($tls) {
-                // debug('Connection is using TLS','INFO','ldap');
-            }
-            else {
-                // debug('Ldap error, TLS does not start correctly: '.ldap_error($this->ldaph),'ERROR','ldap');
-                throw new LdaphException(ldap_error($this->ldaph), 1403);
-            }
+            if ( $tls === false ) throw new LdaphException(ldap_error($this->ldaph), 1403);
 
         }
 
-        if ($this->sso AND $_SERVER['REMOTE_USER'] AND $_SERVER["REMOTE_USER"] == $user AND $_SERVER["KRB5CCNAME"]) {
+        if ( $this->sso AND $_SERVER['REMOTE_USER'] AND $_SERVER["REMOTE_USER"] == $user AND $_SERVER["KRB5CCNAME"] ) {
+
             putenv("KRB5CCNAME=".$_SERVER["KRB5CCNAME"]);
+
             $bind = @ldap_sasl_bind($this->ldaph, NULL, NULL, "GSSAPI");
-        }
-        elseif ( is_null($user) OR is_null($pass) ) {
+
+        } elseif ( is_null($user) OR is_null($pass) ) {
+
             $bind = @ldap_bind($this->ldaph);
-        }
-        else {
+
+        } else {
+
             $user_dn = str_replace('USERNAME', $user, $this->dn);
             $bind = @ldap_bind($this->ldaph, $user_dn, $pass);
+
         }
 
-        if (!$bind) {
-            // debug('Ldap error, server refuse to bind: '.ldap_error($this->ldaph),'ERROR','ldap');
-            throw new LdaphException(ldap_error($this->ldaph), 1402);
-        }
+        if (!$bind) throw new LdaphException(ldap_error($this->ldaph), 1402);
 
         return true;
 
@@ -401,7 +391,9 @@ class Ldaph {
      * Unset a previously opened ldap connection
      */
     private function unsetConnection() {
+
         @ldap_unbind($this->ldaph);
+
     }
 
     /**
@@ -410,34 +402,19 @@ class Ldaph {
     private function searchHelper($what, $clean) {
 
         $base = $this->dc;
+
         $search = str_replace('PATTERN', $what, $this->searchbase);
 
-        if ( empty($this->fields) ) {
-            $result = ldap_search($this->ldaph, $base, $search);
-        }
-        else {
-            $result = ldap_search($this->ldaph, $base, $search, $this->fields);
-        }
+        $result = empty($this->fields) ? ldap_search($this->ldaph, $base, $search) : ldap_search($this->ldaph, $base, $search, $this->fields);
 
-        if (!$result) {
-            // debug('Unable to search through ldap directory','ERROR','ldap');
-            throw new LdaphException(ldap_error($this->ldaph), 1404);
-        }
+        if (!$result) throw new LdaphException(ldap_error($this->ldaph), 1404);
 
         $to_return = ldap_get_entries($this->ldaph, $result);
 
-        if (!$to_return) {
-            // debug('Unable to get ldap entries','ERROR','ldap');
-            throw new LdaphException(ldap_error($this->ldaph), 1412);
-        }
+        if (!$to_return) throw new LdaphException(ldap_error($this->ldaph), 1412);
         
-        if ($clean) {
-            return $this->searchCleaner($to_return);
-        }
-        else {
-            return $to_return;
-        }
-        
+        return $clean ? $this->searchCleaner($to_return) : $to_return;
+
     }
 
     /**
@@ -445,7 +422,7 @@ class Ldaph {
      */
     private function searchCleaner($results) {
 
-        $entry = Array();
+        $entry = array();
 
         unset($results['count']);
 
@@ -454,28 +431,37 @@ class Ldaph {
             unset($result["count"]);
 
             $valid = true;
+
             foreach ($this->fields as $field) {
+
                 if (!array_key_exists(strtolower($field), $result)) $valid = false;
+
             }
 
             if (!$valid) {
+
                 unset($result[$key]);
                 continue;
+
             }
             else {
-                $entry[$key] = Array();
+
+                $entry[$key] = array();
+
             }
 
             foreach ($result as $subkey => $value) {
                 
-                if (is_int($subkey) OR $subkey=="count") {
-                    continue;
-                }
+                if (is_int($subkey) OR $subkey=="count") continue;
+                
                 else {
+
                     if (is_scalar($value)) {
                         $entry[$key][$subkey] = $value;
                     }
+
                     if (is_array($value)) {
+
                         if ($value["count"] == 1) {
                             $entry[$key][$subkey] = $value[0];
                         }
@@ -483,7 +469,9 @@ class Ldaph {
                             unset($value["count"]);
                             $entry[$key][$subkey] = $value;
                         }
+
                     }
+
                 }
 
             }

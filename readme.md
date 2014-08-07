@@ -1,7 +1,9 @@
 comodojo.ldaph
 ==============
 
-> poor man's php ldap class
+poor man's php ldap class
+
+## About
 
 Ldaph is an extremely simple php class made to handle LDAP/ActiveDirectory authentication and search.
 
@@ -11,92 +13,113 @@ It supports also:
 * tls
 * single sign on (Active Directory)
 
-About
------
-
-Ldaph is derived from comodojo.core framework as a Spare Part.
+It is derived from comodojo.core framework as a Spare Part.
 
 You can find more information at http://www.comodojo.org.
 
-Installation
-------------
+## Installation
 
-### Using Composer
+- Using Composer
 
-### Manually
+	Install [composer](https://getcomposer.org/), then:
 
-Download ldaph from http://www.comodojo.org or clone from github, then copy lib/comodojo folder inside your project.
+	`` composer require comodojo/ldaph dev-master ``
 
-Documentation
--------------
+-	Manually
 
-Usage
------
+	Download zipball from GitHub, extract it, include `src/LdaphException.php` and `src/Ldaph.php` in your project.
 
-### Include library
+## Basic Usage
 
-First of all, you need to include ldaph class, contained in lib/comodojo folder:
+-	Creating an instance
 
-	require("lib/comodojo/ldaph.php");
+	Class constructor expects ldap server and port as parameters. Wrap it in a try/catch block, since it may generate a `LdaphException` in case of wrong parameters or missed php ext.
 
-Now you can create an instance of comodojo\ldaph specifying LDAP server address and port.
-
-Constructor will not init connection but can return exceptions, so wrap it in a try/catch block:
+	```php
 
 	try {
-		$ldap = new comodojo\ldaph($ldap_server, $ldap_port);
+		
+		$ldap = new \Comodojo\Ldaph('ldap.exampe.com', 389);
+
 	}
-	catch (Exception $e){
-		// handle exceptions here
+	catch (LdaphException $le){
+
+		// handle exception here
+
 	}
 
-### Authenticate an user
+	```
 
-To authenticate an user you should specify the Distinguished Name to use and then call the 'auth' method:
+-	User authentication
+
+	To authenticate an user you should specify the Distinguished Name to use and then call the 'auth' method, as in example. Ldaph will try to bind to ldap server using DN.
+
+	```php
 
 	try {
-		$ldap = new comodojo\ldaph($ldap_server, $ldap_port);
-		$lauth = $ldap->dn($dn)->auth($username, $userpassword);
+
+		$ldap = new \Comodojo\Ldaph('ldap.exampe.com', 389);
+		$lauth = $ldap->dn($dn)->auth('username', 'userpassword');
+	
 	}
-	catch (Exception $e){
-		// handle exceptions here
+	catch (LdaphException $le){
+
+		// handle exception here
+
 	}
 
-Ldaph will try to bind to ldap server using DN; special word USERNAME will be replaced with $username.
+	```
 
-Examples of DN:
+	Defining DN, there is a special word USERNAME that will be replaced with first auth() parameter ($username).
 
-* "USERNAME@example.com" (for Active Directory)
-* "uid=USERNAME,dc=example,dc=com" (for openLDAP)
+	Examples of DN:
 
-### Search LDAP tree
+	* "USERNAME@example.com" (for Active Directory)
+	* "uid=USERNAME,dc=example,dc=com" (for openLDAP)
 
-For searching, you need at least to specify:
+-	Search LDAP tree
 
-* base DN (base)
-* search DN (searchbase)
-* bind DN (dn)
-* account (user/pass)
+	Searching into ldap tree requires, at least:
 
-Then simply call 'search' method:
+	- base DN (base)
+	- search DN (searchbase)
+	- bind DN (dn)
+	- account (user/pass)
+
+	`search()` method will list ldap tree using this parameters.
+
+	```php
 
 	try {
-		$ldap = new comodojo\ldaph($ldap_server, $ldap_port);
-		$lauth = $ldap->base($base)
-		->searchbase($searchbase)
-		->dn($dn)
-		->account($username, $userpassword)
-		->search("*",true);
+
+		$ldap = new \Comodojo\Ldaph('ldap.exampe.com', 389);
+
+		$lsearch = $ldap->base($base)
+						->searchbase($searchbase)
+						->dn($dn)
+						->account($username, $userpassword)
+						->search("*",true);
+
 	}
-	catch (Exception $e){
-		// handle exceptions here
+	catch (LdaphException $le){
+
+		// handle exception here
+
 	}
 
-Ldaph will replace the special word 'PATTERN' in searchbase with first parameter and perform query.
+	```
 
-Second parameter (if true) will return results in a more convenient, array-based form.
+	Special word 'PATTERN' in searchbase will be replaced with first `search()` parameter and perform query.
 
-Examples of searchbase (if you are looking for usernames):
+	Second parameter (if true) will return results in a more convenient, array-based form.
 
-* "(&(!(objectClass=computer))(|(anr=PATTERN)))" (for Active Directory)
-* "(uid=PATTERN)" (for openLDAP)
+	Examples of searchbase (if you are looking for usernames):
+
+	* "(&(!(objectClass=computer))(|(anr=PATTERN)))" (for Active Directory)
+	* "(uid=PATTERN)" (for openLDAP)
+
+## Documentation
+
+docs.comodojo.org
+
+api.comodojo.org
