@@ -3,9 +3,9 @@
 /**
  * ldaph exception handler
  * 
- * @package 	Comodojo ldaph (Spare Parts)
- * @author		comodojo <info@comodojo.org>
- * @license 	GPL-3.0+
+ * @package     Comodojo Spare Parts
+ * @author      Marco Giovinazzi <info@comodojo.org>
+ * @license     GPL-3.0+
  *
  * LICENSE:
  * 
