@@ -1,4 +1,4 @@
-<?php namespace comodojo\Exception;
+<?php namespace Comodojo\Exception;
 
 /**
  * ldaph exception handler

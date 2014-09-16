@@ -291,7 +291,7 @@ class Ldaph {
 
             throw $le;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             $this->unsetConnection();
 
@@ -330,7 +330,7 @@ class Ldaph {
 
             throw $le;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             $this->unsetConnection();
 
