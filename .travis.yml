@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.3.3
   - 5.3
   - 5.4
   - 5.5
@@ -10,7 +9,7 @@ php:
   - hhvm
 
 before_install:
-  - echo "extension=ldap.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - if [ "`phpenv version-name`" != "hhvm" ]; then echo "extension = ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
 
 before_script:
   - composer install --prefer-source
