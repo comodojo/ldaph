@@ -1,7 +1,7 @@
 {
     "name": "comodojo/ldaph",
     "description": "poor man's php ldap class",
-    "license": "GPL-3.0+",
+    "license": "MIT",
     "keywords": [
         "ldap",
         "php",
@@ -11,7 +11,7 @@
         "directory search",
         "authentication"
     ],
-    "homepage": "http://www.comodojo.org",
+    "homepage": "http://comodojo.org",
     "authors": [
         {
             "name": "Marco Giovinazzi",
@@ -26,6 +26,10 @@
              "Comodojo\\Exception\\": "src/Exception",
              "Comodojo\\Ldaph\\": "src"
          }
+    },
+    "require": {
+        "php": ">=5.1.3",
+        "ext-ldap": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
