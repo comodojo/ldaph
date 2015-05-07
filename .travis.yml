@@ -9,6 +9,9 @@ php:
   - 7
   - hhvm
 
+before_install:
+  - echo "extension=ldap.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+
 before_script:
   - composer install --prefer-source
 

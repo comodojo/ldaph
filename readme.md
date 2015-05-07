@@ -119,4 +119,4 @@ It supports:
 
 ## See also
 
-[ldap api](http://api.comodojo.org/framework/Comodojo/Ldaph/Ldaph.html)
+[ldaph api](http://api.comodojo.org/framework/Comodojo/Ldaph/Ldaph.html)
