@@ -117,6 +117,14 @@ It supports:
 	* "(&(!(objectClass=computer))(|(anr=PATTERN)))" (for Active Directory)
 	* "(uid=PATTERN)" (for openLDAP)
 
-## See also
+## Documentation
 
-[ldaph api](http://api.comodojo.org/framework/Comodojo/Ldaph/Ldaph.html)
+- [API](https://api.comodojo.org/libs/Comodojo/Ldaph.html)
+
+## Contributing
+
+Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## License
+
+`` comodojo/ldaph `` is released under the MIT License (MIT). Please see [License File](LICENSE) for more information.
