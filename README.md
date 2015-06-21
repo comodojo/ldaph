@@ -1,4 +1,4 @@
-## comodojo.ldaph
+# comodojo.ldaph
 
 [![Build Status](https://api.travis-ci.org/comodojo/ldaph.png)](http://travis-ci.org/comodojo/ldaph) [![Latest Stable Version](https://poser.pugx.org/comodojo/ldaph/v/stable)](https://packagist.org/packages/comodojo/ldaph) [![Total Downloads](https://poser.pugx.org/comodojo/ldaph/downloads)](https://packagist.org/packages/comodojo/ldaph) [![Latest Unstable Version](https://poser.pugx.org/comodojo/ldaph/v/unstable)](https://packagist.org/packages/comodojo/ldaph) [![License](https://poser.pugx.org/comodojo/ldaph/license)](https://packagist.org/packages/comodojo/ldaph)
 

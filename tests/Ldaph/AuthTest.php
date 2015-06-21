@@ -1,4 +1,4 @@
-<?php namespace Comodojo\Ldaph\Tests;
+<?php
 
 class AuthTest extends \PHPUnit_Framework_TestCase {
 

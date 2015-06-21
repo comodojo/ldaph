@@ -6,7 +6,7 @@ use \Comodojo\Exception\LdaphException;
  * ldaph: poor man's php ldap class
  * 
  * @package     Comodojo Spare Parts
- * @author      Marco Giovinazzi <info@comodojo.org>
+ * @author      Marco Giovinazzi <marco.giovinazzi@comodojo.org>
  * @license     MIT
  *
  * LICENSE:

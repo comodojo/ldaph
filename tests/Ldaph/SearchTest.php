@@ -1,4 +1,4 @@
-<?php namespace Comodojo\Ldaph\Tests;
+<?php
 
 class SearchTest extends \PHPUnit_Framework_TestCase {
 
