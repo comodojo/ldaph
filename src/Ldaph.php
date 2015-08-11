@@ -127,7 +127,7 @@ class Ldaph {
         
         if ( empty($server) ) throw new LdaphException("Invalid LDAP parameters", 1401);
         
-        if (!function_exists("ldap_connect")) throw new LdaphException("PHP ldap extension not available", 1407);
+        if ( !function_exists("ldap_connect") ) throw new LdaphException("PHP ldap extension not available", 1407);
 
         $this->server = $server;
 
@@ -191,14 +191,13 @@ class Ldaph {
      *
      * @return  \Comodojo\Ldaph\Ldaph
      */
-    final public function version($mode=3) {
+    final public function version($mode = 3) {
 
         $mode = filter_var($mode, FILTER_VALIDATE_INT);
 
-        if ($mode === 2) {
+        if ( $mode === 2 ) {
             $this->version = 2;
-        }
-        else {
+        } else {
             $this->version = 3;
         }
 
@@ -213,14 +212,13 @@ class Ldaph {
      *
      * @return  \Comodojo\Ldaph\Ldaph
      */
-    final public function ssl($mode=true) {
+    final public function ssl($mode = true) {
 
         $mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
 
-        if ($mode === true) {
+        if ( $mode === true ) {
             $this->ssl = true;
-        }
-        else {
+        } else {
             $this->ssl = false;
         }
 
@@ -235,14 +233,13 @@ class Ldaph {
      *
      * @return  \Comodojo\Ldaph\Ldaph
      */
-    final public function tls($mode=true) {
+    final public function tls($mode = true) {
 
         $mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
 
-        if ($mode === true) {
+        if ( $mode === true ) {
             $this->tls = true;
-        }
-        else {
+        } else {
             $this->tls = false;
         }
 
@@ -259,11 +256,11 @@ class Ldaph {
      *
      * @throws  \Comodojo\Exception\LdaphException
      */
-    final public function sso($mode=true) {
+    final public function sso($mode = true) {
 
         $mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
 
-        if ($mode === true) {
+        if ( $mode === true ) {
 
             if ( !function_exists('ldap_sasl_bind') ) throw new LdaphException("No LDAP SSO support", 1408);
 
@@ -291,7 +288,7 @@ class Ldaph {
      */
     final public function account($user, $pass) {
         
-        if ( empty($user) OR empty($pass)) throw new LdaphException("Invalid LDAP user/pass", 1402);
+        if ( empty($user) OR empty($pass) ) throw new LdaphException("Invalid LDAP user/pass", 1402);
         
         $this->user = $user;
         $this->pass = $pass;
@@ -313,8 +310,7 @@ class Ldaph {
         
         if ( empty($s) ) {
             $this->searchbase = null;
-        }
-        else {
+        } else {
             $this->searchbase = str_replace(' ', '', $s);
         }
 
@@ -354,7 +350,7 @@ class Ldaph {
      */
     public function auth($userName, $userPass) {
         
-        if( empty($userName) OR empty($userPass) ) throw new LdaphException("Invalid LDAP user/pass", 1402);
+        if ( empty($userName) OR empty($userPass) ) throw new LdaphException("Invalid LDAP user/pass", 1402);
         
         try {
 
@@ -391,7 +387,7 @@ class Ldaph {
      * @throws  \Comodojo\Exception\LdaphException
      * @throws  \Exception
      */
-    public function search($what="*", $clean=false) {
+    public function search($what = "*", $clean = false) {
             
         try {
 
@@ -401,8 +397,7 @@ class Ldaph {
             
             $result = $this->searchHelper($what, filter_var($clean, FILTER_VALIDATE_BOOLEAN));
 
-        }
-        catch (LdaphException $le) {
+        } catch (LdaphException $le) {
 
             $this->unsetConnection();
 
@@ -432,16 +427,16 @@ class Ldaph {
      *
      * @throws  \Comodojo\Exception\LdaphException
      */
-    private function setupConnection($user=null, $pass=null) {
+    private function setupConnection($user = null, $pass = null) {
 
         $this->ldaph = $this->ssl ? ldap_connect("ldaps://".$this->server, $this->port) : ldap_connect($this->server, $this->port);
 
-        if (!$this->ldaph) throw new LdaphException(ldap_error($this->ldaph), 1403);
+        if ( !$this->ldaph ) throw new LdaphException(ldap_error($this->ldaph), 1403);
         
         ldap_set_option($this->ldaph, LDAP_OPT_PROTOCOL_VERSION, $this->version);
         ldap_set_option($this->ldaph, LDAP_OPT_REFERRALS, 0);
 
-        if ($this->tls) {
+        if ( $this->tls ) {
 
             $tls = @ldap_start_tls($this->ldaph);
 
@@ -453,7 +448,7 @@ class Ldaph {
 
             putenv("KRB5CCNAME=".$_SERVER["KRB5CCNAME"]);
 
-            $bind = @ldap_sasl_bind($this->ldaph, NULL, NULL, "GSSAPI");
+            $bind = @ldap_sasl_bind($this->ldaph, null, null, "GSSAPI");
 
         } elseif ( is_null($user) OR is_null($pass) ) {
 
@@ -466,7 +461,7 @@ class Ldaph {
 
         }
 
-        if (!$bind) throw new LdaphException(ldap_error($this->ldaph), 1402);
+        if ( !$bind ) throw new LdaphException(ldap_error($this->ldaph), 1402);
 
         return true;
 
@@ -499,7 +494,7 @@ class Ldaph {
 
         $result = empty($this->fields) ? ldap_search($this->ldaph, $base, $search) : ldap_search($this->ldaph, $base, $search, $this->fields);
 
-        if (!$result) throw new LdaphException(ldap_error($this->ldaph), 1404);
+        if ( !$result ) throw new LdaphException(ldap_error($this->ldaph), 1404);
 
         $to_return = ldap_get_entries($this->ldaph, $result);
 
@@ -520,46 +515,44 @@ class Ldaph {
 
         unset($results['count']);
 
-        foreach ($results as $key => $result) {
+        foreach ( $results as $key => $result ) {
 
             unset($result["count"]);
 
             $valid = true;
 
-            foreach ($this->fields as $field) {
+            foreach ( $this->fields as $field ) {
 
-                if (!array_key_exists(strtolower($field), $result)) $valid = false;
+                if ( !array_key_exists(strtolower($field), $result) ) $valid = false;
 
             }
 
-            if (!$valid) {
+            if ( !$valid ) {
 
                 unset($result[$key]);
                 continue;
 
-            }
-            else {
+            } else {
 
                 $entry[$key] = array();
 
             }
 
-            foreach ($result as $subkey => $value) {
+            foreach ( $result as $subkey => $value ) {
                 
-                if (is_int($subkey) OR $subkey=="count") continue;
+                if ( is_int($subkey) OR $subkey == "count" ) continue;
                 
                 else {
 
-                    if (is_scalar($value)) {
+                    if ( is_scalar($value) ) {
                         $entry[$key][$subkey] = $value;
                     }
 
-                    if (is_array($value)) {
+                    if ( is_array($value) ) {
 
-                        if ($value["count"] == 1) {
+                        if ( $value["count"] == 1 ) {
                             $entry[$key][$subkey] = $value[0];
-                        }
-                        else {
+                        } else {
                             unset($value["count"]);
                             $entry[$key][$subkey] = $value;
                         }
