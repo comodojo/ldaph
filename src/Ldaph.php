@@ -53,7 +53,7 @@ class Ldaph {
     /**
      * SSO support
      *
-     * @var string
+     * @var bool
      */
     private $sso = false;
 
@@ -76,7 +76,7 @@ class Ldaph {
      *
      * @var string
      */
-    private $searchbase = false;
+    private $searchbase = null;
 
     /**
      * Ldap username
@@ -98,6 +98,13 @@ class Ldaph {
      * @var int
      */
     private $port = 389;
+
+    /**
+     * Ldap server
+     *
+     * @var string
+     */
+    private $server = null;
 
     /**
      * Fields to return
@@ -305,7 +312,7 @@ class Ldaph {
     final public function searchbase($s) {
         
         if ( empty($s) ) {
-            $this->searchbase = false;
+            $this->searchbase = null;
         }
         else {
             $this->searchbase = str_replace(' ', '', $s);
@@ -418,6 +425,9 @@ class Ldaph {
     /**
      * Setup LDAP connection
      *
+     * @param string $user
+     * @param string $pass
+     *
      * @return  bool
      *
      * @throws  \Comodojo\Exception\LdaphException
@@ -473,6 +483,9 @@ class Ldaph {
 
     /**
      * Helper for $this->search()
+     *
+     * @param string $what
+     * @param bool   $clean
      *
      * @return  array
      *
