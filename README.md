@@ -1,6 +1,6 @@
 # comodojo.ldaph
 
-[![Build Status](https://api.travis-ci.org/comodojo/ldaph.png)](http://travis-ci.org/comodojo/ldaph) [![Latest Stable Version](https://poser.pugx.org/comodojo/ldaph/v/stable)](https://packagist.org/packages/comodojo/ldaph) [![Total Downloads](https://poser.pugx.org/comodojo/ldaph/downloads)](https://packagist.org/packages/comodojo/ldaph) [![Latest Unstable Version](https://poser.pugx.org/comodojo/ldaph/v/unstable)](https://packagist.org/packages/comodojo/ldaph) [![License](https://poser.pugx.org/comodojo/ldaph/license)](https://packagist.org/packages/comodojo/ldaph)
+[![Build Status](https://api.travis-ci.org/comodojo/ldaph.png)](http://travis-ci.org/comodojo/ldaph) [![Latest Stable Version](https://poser.pugx.org/comodojo/ldaph/v/stable)](https://packagist.org/packages/comodojo/ldaph) [![Total Downloads](https://poser.pugx.org/comodojo/ldaph/downloads)](https://packagist.org/packages/comodojo/ldaph) [![Latest Unstable Version](https://poser.pugx.org/comodojo/ldaph/v/unstable)](https://packagist.org/packages/comodojo/ldaph) [![License](https://poser.pugx.org/comodojo/ldaph/license)](https://packagist.org/packages/comodojo/ldaph) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/comodojo/ldaph/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/comodojo/ldaph/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/comodojo/ldaph/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/comodojo/ldaph/?branch=master)
 
 poor man's php ldap class
 
@@ -14,15 +14,9 @@ It supports:
 
 ## Installation
 
-- Using Composer
+Install [composer](https://getcomposer.org/), then:
 
-	Install [composer](https://getcomposer.org/), then:
-
-	`` composer require comodojo/ldaph 1.0.* ``
-
--	Manually
-
-	Download zipball from GitHub, extract it, include `src/LdaphException.php` and `src/Ldaph.php` in your project.
+`` composer require comodojo/ldaph 1.0.* ``
 
 ## Basic Usage
 
