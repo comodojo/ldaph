@@ -12,16 +12,15 @@ class AuthTest extends \PHPUnit_Framework_TestCase {
     protected $auth_password = 'password';
 
     public function testAuthentication() {
-        
+
         $ldap = new \Comodojo\Ldaph\Ldaph($this->ldap_server, $this->ldap_port);
-    
 
         $lauth = $ldap->dn($this->dn)
             ->version($this->ldap_verion)
             ->ssl($this->use_ssl)
             ->tls($this->use_tls)
             ->auth($this->auth_login, $this->auth_password);
-        
+
         $this->assertTrue($lauth);
 
     }

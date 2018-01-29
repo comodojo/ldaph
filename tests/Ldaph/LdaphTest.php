@@ -18,7 +18,7 @@ class LdaphTest extends \PHPUnit_Framework_TestCase {
      * @expectedException        Comodojo\Exception\LdaphException
      */
     public function testInvalidServer() {
-        
+
         $ldap = new \Comodojo\Ldaph\Ldaph('');
 
     }
@@ -26,7 +26,7 @@ class LdaphTest extends \PHPUnit_Framework_TestCase {
     public function testProperties() {
 
         $ldap = new \Comodojo\Ldaph\Ldaph($this->ldap_server, $this->ldap_port);
-    
+
         $result = $ldap->dn($this->dn)
             ->version($this->ldap_verion)
             ->ssl($this->use_ssl)

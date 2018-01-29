@@ -1,16 +1,17 @@
 <?php namespace Comodojo\Ldaph;
 
 use \Comodojo\Exception\LdaphException;
+use \Exception;
 
 /**
  * ldaph: poor man's php ldap class
- * 
+ *
  * @package     Comodojo Spare Parts
  * @author      Marco Giovinazzi <marco.giovinazzi@comodojo.org>
  * @license     MIT
  *
  * LICENSE:
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,7 +22,7 @@ use \Comodojo\Exception\LdaphException;
  */
 
 class Ldaph {
-    
+
     /**
      * Ldap handler
      *
@@ -115,18 +116,18 @@ class Ldaph {
 
     /**
      * Constructor method
-     * 
+     *
      * Prepare environment for connection (bind)
      *
      * @param   string  $server ldap server (ip or FQDN)
      * @param   int     $port   port to connect to
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     public function __construct($server, $port = 389) {
-        
+
         if ( empty($server) ) throw new LdaphException("Invalid LDAP parameters", 1401);
-        
+
         if ( !function_exists("ldap_connect") ) throw new LdaphException("PHP ldap extension not available", 1407);
 
         $this->server = $server;
@@ -144,41 +145,41 @@ class Ldaph {
 
     /**
      * Set ldap base
-     * 
+     *
      * @param   string  $dcs    ldap base, comma separated, not spaced
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     final public function base($dcs) {
 
         if ( empty($dcs) ) throw new LdaphException($dcs, 1410);
 
-        $pDc = str_replace(' ', '', $dcs);
+        $pDc = preg_replace('/\s*,\s*/', ',', $dcs);
 
         $this->dc = $pDc;
-        
+
         return $this;
 
     }
 
     /**
      * Set ldap distinguished name (used in ldap bind)
-     * 
+     *
      * Before bind, special word USERNAME will be substituted by real username
-     * 
+     *
      * @param   string  $dn    ldap DN, comma separated, not spaced
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     final public function dn($dn) {
 
-        if ( empty($dn) ) throw new LdaphException($dns, 1411);
+        if ( empty($dn) ) throw new LdaphException($dn, 1411);
 
-        $this->dn = str_replace(' ', '', $dn);
+        $this->dn = preg_replace('/\s*,\s*/', ',', $dn);
 
         return $this;
 
@@ -186,10 +187,10 @@ class Ldaph {
 
     /**
      * Set ldap version: 2 or 3 (default)
-     * 
+     *
      * @param   int $mode   ldap protocol version
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      */
     final public function version($mode = 3) {
 
@@ -207,10 +208,10 @@ class Ldaph {
 
     /**
      * Enable/disable ssl for connection
-     * 
+     *
      * @param   bool    $mode
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      */
     final public function ssl($mode = true) {
 
@@ -228,10 +229,10 @@ class Ldaph {
 
     /**
      * Enable/disable tls for connection
-     * 
+     *
      * @param   bool    $mode
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      */
     final public function tls($mode = true) {
 
@@ -249,12 +250,12 @@ class Ldaph {
 
     /**
      * Enable/disable single sign on
-     * 
+     *
      * @param   bool    $mode
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     final public function sso($mode = true) {
 
@@ -267,7 +268,7 @@ class Ldaph {
             $this->sso = true;
 
         } else {
-          
+
             $this->sso = false;
 
         }
@@ -278,40 +279,40 @@ class Ldaph {
 
     /**
      * Set user/pass for bind and search
-     * 
+     *
      * @param   string  $user
      * @param   string  $pass
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     final public function account($user, $pass) {
-        
+
         if ( empty($user) OR empty($pass) ) throw new LdaphException("Invalid LDAP user/pass", 1402);
-        
+
         $this->user = $user;
         $this->pass = $pass;
-        
+
         return $this;
 
     }
-    
+
     /**
      * Set ldap search base
      *
      * During search, special word PATTERN will be sbstituted by provided pattern
-     * 
+     *
      * @param   string  $s
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      */
     final public function searchbase($s) {
-        
+
         if ( empty($s) ) {
             $this->searchbase = null;
         } else {
-            $this->searchbase = str_replace(' ', '', $s);
+            $this->searchbase = preg_replace('/\s*,\s*/', ',', $s);
         }
 
         return $this;
@@ -320,15 +321,15 @@ class Ldaph {
 
     /**
      * Set fields to query ldap for
-     * 
+     *
      * @param   mixed    $f
      *
-     * @return  \Comodojo\Ldaph\Ldaph
+     * @return  Ldaph
      */
     final public function fields($f) {
 
         if ( empty($f) ) $this->fields = array();
-        
+
         elseif ( is_array($f) ) $this->fields = $f;
 
         else $this->fields = array($f);
@@ -339,19 +340,19 @@ class Ldaph {
 
     /**
      * Authenticate an user via LDAP
-     * 
+     *
      * @param   string  $userName   The user to auth
      * @param   string  $userPass   The password for user
-     * 
+     *
      * @return  bool
      *
-     * @throws  \Comodojo\Exception\LdaphException
-     * @throws  \Exception
+     * @throws  LdaphException
+     * @throws  Exception
      */
     public function auth($userName, $userPass) {
-        
+
         if ( empty($userName) OR empty($userPass) ) throw new LdaphException("Invalid LDAP user/pass", 1402);
-        
+
         try {
 
             $auth = $this->setupConnection($userName, $userPass);
@@ -362,7 +363,7 @@ class Ldaph {
 
             throw $le;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             $this->unsetConnection();
 
@@ -373,9 +374,9 @@ class Ldaph {
         $this->unsetConnection();
 
         return $auth;
-            
+
     }
-    
+
     /**
      * Search ldap directory for $what
      *
@@ -384,17 +385,17 @@ class Ldaph {
      *
      * @return  array
      *
-     * @throws  \Comodojo\Exception\LdaphException
-     * @throws  \Exception
+     * @throws  LdaphException
+     * @throws  Exception
      */
     public function search($what = "*", $clean = false) {
-            
+
         try {
 
             $this->setupConnection($this->user, $this->pass);
 
             ldap_set_option($this->ldaph, LDAP_OPT_SIZELIMIT, 0);
-            
+
             $result = $this->searchHelper($what, filter_var($clean, FILTER_VALIDATE_BOOLEAN));
 
         } catch (LdaphException $le) {
@@ -403,7 +404,7 @@ class Ldaph {
 
             throw $le;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             $this->unsetConnection();
 
@@ -425,14 +426,14 @@ class Ldaph {
      *
      * @return  bool
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     private function setupConnection($user = null, $pass = null) {
 
         $this->ldaph = $this->ssl ? ldap_connect("ldaps://".$this->server, $this->port) : ldap_connect($this->server, $this->port);
 
         if ( !$this->ldaph ) throw new LdaphException(ldap_error($this->ldaph), 1403);
-        
+
         ldap_set_option($this->ldaph, LDAP_OPT_PROTOCOL_VERSION, $this->version);
         ldap_set_option($this->ldaph, LDAP_OPT_REFERRALS, 0);
 
@@ -466,7 +467,7 @@ class Ldaph {
         return true;
 
     }
-    
+
     /**
      * Unset a previously opened ldap connection
      */
@@ -484,7 +485,7 @@ class Ldaph {
      *
      * @return  array
      *
-     * @throws  \Comodojo\Exception\LdaphException
+     * @throws  LdaphException
      */
     private function searchHelper($what, $clean) {
 
@@ -499,7 +500,7 @@ class Ldaph {
         $to_return = ldap_get_entries($this->ldaph, $result);
 
         if ( $to_return === false ) throw new LdaphException(ldap_error($this->ldaph), 1412);
-        
+
         return $clean ? $this->searchCleaner($to_return) : $to_return;
 
     }
@@ -539,9 +540,9 @@ class Ldaph {
             }
 
             foreach ( $result as $subkey => $value ) {
-                
+
                 if ( is_int($subkey) OR $subkey == "count" ) continue;
-                
+
                 else {
 
                     if ( is_scalar($value) ) {
@@ -568,5 +569,5 @@ class Ldaph {
         return $entry;
 
     }
-    
+
 }

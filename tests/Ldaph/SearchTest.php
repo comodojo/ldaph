@@ -15,9 +15,9 @@ class SearchTest extends \PHPUnit_Framework_TestCase {
     protected $fields = array("sn", "cn");
 
     public function testSearch() {
-        
+
         $ldap = new \Comodojo\Ldaph\Ldaph($this->ldap_server, $this->ldap_port);
-    
+
         $data = $ldap->base($this->base)
             ->searchbase($this->searchbase)
             ->dn($this->dn)
@@ -26,11 +26,11 @@ class SearchTest extends \PHPUnit_Framework_TestCase {
             ->tls($this->use_tls)
             ->account($this->auth_login, $this->auth_password)
             ->search("*",true);
-        
+
         $this->assertInternalType('array', $data);
 
         foreach ($data as $result) {
-            
+
             $this->assertInternalType('array', $result);
 
             $this->assertArrayHasKey("uid", $result);
@@ -46,7 +46,7 @@ class SearchTest extends \PHPUnit_Framework_TestCase {
     public function testFilteredSearch() {
 
         $ldap = new \Comodojo\Ldaph\Ldaph($this->ldap_server, $this->ldap_port);
-    
+
         $data = $ldap->base($this->base)
             ->searchbase($this->searchbase)
             ->dn($this->dn)
@@ -56,11 +56,11 @@ class SearchTest extends \PHPUnit_Framework_TestCase {
             ->account($this->auth_login, $this->auth_password)
             ->fields($this->fields)
             ->search("*",true);
-        
+
         $this->assertInternalType('array', $data);
 
         foreach ($data as $result) {
-            
+
             $this->assertInternalType('array', $result);
 
             $this->assertArrayNotHasKey("uid", $result);
