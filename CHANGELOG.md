@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.0.2
+-----
+
+* fix dn/base sanitization
+* fix wrong LdapException param
+
 1.0.1
 -----
 
