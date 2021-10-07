@@ -1,5 +1,5 @@
 {
-    "name": "comodojo/ldaph",
+    "name": "pmarcelli/ldaph",
     "description": "poor man's php ldap class",
     "license": "MIT",
     "keywords": [
