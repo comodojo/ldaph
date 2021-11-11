@@ -28,7 +28,7 @@
          }
     },
     "require": {
-        "php": "^7.3",
+        "php": ">=5.3.0",
         "ext-ldap": "*",
         "pmarcelli/exceptions": "dev-exceptions_u7320"
     },
